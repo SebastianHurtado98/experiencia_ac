@@ -13,10 +13,12 @@ interface ConsultantDetailsProps {
   consultant: Consultant;
   themes: Theme[];
   onUpdateConsultant: (updatedConsultant: Consultant) => void;
+  iniEditMode: boolean;
 }
 
-export default function ConsultantDetails({ consultant, themes, onUpdateConsultant }: ConsultantDetailsProps) {
-  const [editMode, setEditMode] = useState(false);
+export default function ConsultantDetails({ consultant, themes, onUpdateConsultant, iniEditMode }: ConsultantDetailsProps) {
+  //console.log(1, iniEditMode)
+  const [editMode, setEditMode] = useState(iniEditMode);
   const [editedConsultant, setEditedConsultant] = useState(consultant);
   const [themeSearch, setThemeSearch] = useState('');
 

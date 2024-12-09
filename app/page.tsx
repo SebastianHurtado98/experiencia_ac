@@ -7,7 +7,8 @@ import ConsultantDetails from '../components/ConsultantDetails';
 import { consultants } from '../data';
 import { Consultant } from '../types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { getConsultants, getThemes, updateConsultant } from '@/lib/api';
+import { getConsultants, getThemes, insertConsultant, updateConsultant, updateConsultantThemes } from '@/lib/api';
+import { Button } from "@/components/ui/button"
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'themes' | 'consultants'>('themes');
@@ -16,6 +17,8 @@ export default function Home() {
   const [consultantData, setConsultantData] = useState([]);
 
   const [themeList, setThemeList] = useState([])
+
+  let iniEditMode = false;
 
   useEffect(() => {
     fetchThemes()
@@ -43,11 +46,33 @@ export default function Home() {
 
   const handleUpdateConsultant = (updatedConsultant: Consultant) => {
 
-    updateConsultant(updatedConsultant)
+    console.log(updatedConsultant)
 
-    setConsultantData((prev) =>
-      prev.map((consultant) => (consultant.consultantId === updatedConsultant.consultantId ? updatedConsultant : consultant))
-    );
+    updateConsultant(updatedConsultant)
+    updateConsultantThemes(parseInt(updatedConsultant.consultantId), updatedConsultant.consultantTheme)
+
+    setTimeout(() => {
+      location.reload();
+    }, 1000);
+  };
+
+  const handleCreateConsultant = async () => {
+    const newConsultant: Consultant = {
+      consultantId: Date.now().toString(),
+      name: "Nuevo Especialista",
+      cv: "",
+      email: "",
+      phone: "",
+      consultantTheme: []
+    };
+
+    const createdConsultant = await insertConsultant(newConsultant)
+    
+    iniEditMode = true;
+    //console.log(0, iniEditMode)
+
+    setConsultantData((prev) => [...prev, createdConsultant[0]]);
+    setSelectedConsultant(createdConsultant[0].consultantId);
   };
 
   const filteredConsultants = selectedTheme
@@ -80,6 +105,7 @@ export default function Home() {
             <div>
               <h2 className="text-xl font-semibold mb-4">Lista de Especialistas</h2>
               <ConsultantList consultants={consultantData} onSelectConsultant={handleConsultantSelect}  />
+              <Button onClick={handleCreateConsultant} className="mt-4">Crear Nuevo Especialista</Button>
             </div>
             {selectedConsultant && (
               <div>
@@ -88,6 +114,7 @@ export default function Home() {
                   consultant={consultantData.find((c) => c.consultantId === selectedConsultant)!}
                   themes={themeList}
                   onUpdateConsultant={handleUpdateConsultant}
+                  iniEditMode={iniEditMode}
                 />
               </div>
             )}
@@ -101,6 +128,7 @@ export default function Home() {
             consultant={consultantData.find((c) => c.consultantId === selectedConsultant)!}
             themes={themeList}
             onUpdateConsultant={handleUpdateConsultant}
+            iniEditMode={false}
           />
         </div>
       )}

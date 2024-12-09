@@ -19,6 +19,21 @@ export async function getConsultants(): Promise<Consultant[]> {
   return data
 }
 
+export async function insertConsultant(consultant: Consultant): Promise<Consultant[]> {
+  const { data, error } = await supabase
+    .from('consultant')
+    .insert({ 
+      name: consultant.name,
+      phone: consultant.phone,
+      email: consultant.email,
+      cv: consultant.cv
+    })
+    .select('*, consultantTheme(*, theme(*))')
+    
+  
+  if (error) throw error    
+  return data
+}
 
 export async function updateConsultant(consultant: Consultant): Promise<void> {
   const { error } = await supabase
@@ -36,14 +51,17 @@ export async function updateConsultant(consultant: Consultant): Promise<void> {
 
 export async function updateConsultantThemes(consultantId: number, themes: ConsultantTheme[]): Promise<void> {
 
-  console.log(themes)
+  themes = themes.map(theme => ({
+    ...theme,
+    consultantId: consultantId,
+  }));  
 
-  /*const { error: deleteError } = await supabase
+  const { error: deleteError } = await supabase
     .from('consultantTheme')
     .delete()
     .eq('consultantId', consultantId)
 
-  if (deleteError) throw deleteError*/
+  if (deleteError) throw deleteError
 
   const { error: insertError } = await supabase
     .from('consultantTheme')
