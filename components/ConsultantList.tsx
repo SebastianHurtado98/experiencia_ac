@@ -14,12 +14,12 @@ export default function ConsultantList({ consultants, onSelectConsultant }: Cons
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  let filteredConsultants = consultants.filter((consultant) =>
+  const filteredConsultants = consultants.filter((consultant) =>
     consultant.name.toLowerCase().includes(search.toLowerCase())
   );
 
   const pageCount = Math.ceil(filteredConsultants.length / itemsPerPage);
-  let paginatedConsultants = filteredConsultants.slice(
+  const paginatedConsultants = filteredConsultants.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );

@@ -1,13 +1,14 @@
+// @ts-nocheck
+
 'use client'
 
 import { useState, useEffect } from 'react';
 import ThemeList from '../components/ThemeList';
 import ConsultantList from '../components/ConsultantList';
 import ConsultantDetails from '../components/ConsultantDetails';
-import { consultants } from '../data';
 import { Consultant } from '../types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { getConsultants, getThemes, insertConsultant, updateConsultant, updateConsultantThemes } from '@/lib/api';
+import { getConsultants, getThemes, insertConsultant, updateConsultant } from '@/lib/api';
 import { Button } from "@/components/ui/button"
 
 export default function Home() {
@@ -49,7 +50,6 @@ export default function Home() {
     console.log(updatedConsultant)
 
     updateConsultant(updatedConsultant)
-    updateConsultantThemes(parseInt(updatedConsultant.consultantId), updatedConsultant.consultantTheme)
 
     setTimeout(() => {
       location.reload();

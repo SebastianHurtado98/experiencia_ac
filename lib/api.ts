@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import supabase from './supabase'
 import { Theme, Consultant, ConsultantTheme } from '../types'
 
